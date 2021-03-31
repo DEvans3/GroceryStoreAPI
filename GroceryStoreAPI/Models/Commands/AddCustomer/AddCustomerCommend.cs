@@ -9,7 +9,7 @@ namespace GroceryStoreAPI.Models.Commands.AddCustomer
 {
     public class AddCustomerCommend
     {
-        public void AddCustomer(string name)
+        public bool AddCustomer(string name)
         {
             CustomerList customer = new CustomerList();
             string fileName = "database.json";
@@ -24,8 +24,18 @@ namespace GroceryStoreAPI.Models.Commands.AddCustomer
                 name = name
             });
 
-            string jsonOutput = JsonSerializer.Serialize(customer); // serializing customerList object 
-            File.WriteAllText(fileName, jsonOutput);
+
+            if (customer.customers != null)
+            {
+                string jsonOutput = JsonSerializer.Serialize(customer); // serializing customerList object 
+                File.WriteAllText(fileName, jsonOutput);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
     }

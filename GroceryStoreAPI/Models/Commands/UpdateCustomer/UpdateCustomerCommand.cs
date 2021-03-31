@@ -11,27 +11,34 @@ namespace GroceryStoreAPI.Models.Commands.UpdateCustomer
     public class UpdateCustomerCommand
     {
 
-        public void UpdateCustomer(int id, string customerName)
+        public bool UpdateCustomer(int id, string customerName)
         {
             string fileName = "database.json";
             CustomerList customerList = new CustomerList();
+            UpdateCustomerResultVM index = new UpdateCustomerResultVM();
             customerList.LoadJson();
 
-            var updateCustomer = customerList.customers.FirstOrDefault(c => c.id == id); // finding the element of the given id
+            index.CustomerId = customerList.customers.FindIndex(c => c.id == id); // finding the index of the given id
 
-            var index = customerList.customers.FindIndex(c => c.id == id); // finding the index of the given id
-
-
-            if (updateCustomer != null) // checking that list is not empty
+            if (index.CustomerId != -1) // checking if an index is not found
             {
+                var updateCustomer = customerList.customers[index.CustomerId]; // finding the element of the given id
+                
                 updateCustomer.name = customerName;
+
+                customerList.customers[index.CustomerId] = updateCustomer; // setting customeList element equal updateCustomer element
+
+                string jsonOutput = JsonSerializer.Serialize(customerList); // serializing customerList object 
+
+                File.WriteAllText(fileName, jsonOutput);
+
+                return true;
+            }
+            else
+            {
+                return false;
             }
 
-            customerList.customers[index] = updateCustomer; // setting customeList element equal updateCustomer element
-
-            string jsonOutput = JsonSerializer.Serialize(customerList); // serializing customerList object 
-
-            File.WriteAllText(fileName, jsonOutput);
 
         }
     }

@@ -9,19 +9,29 @@ namespace GroceryStoreAPI.Models.Commands.DeleteCustomer
 {
     public class DeleteCustomerCommand
     {
-        public void DeleteCustomer(int id)
+        public bool DeleteCustomer(int id)
         {
             string fileName = "database.json";
             CustomerList customerList = new CustomerList();
+            DeleteCustomerResultVM index = new DeleteCustomerResultVM();
             customerList.LoadJson();
 
-            var index = customerList.customers.FindIndex(c => c.id == id); // find the index of the given id
+            index.CustomerId = customerList.customers.FindIndex(c => c.id == id); // find the index of the given id
 
-            customerList.customers.RemoveAt(index); // removing element at provided index
+            if (index.CustomerId != -1)
+            {
+                customerList.customers.RemoveAt(index.CustomerId); // removing element at provided index
 
-            string jsonOutput = JsonSerializer.Serialize(customerList); // serializing customerList object 
+                string jsonOutput = JsonSerializer.Serialize(customerList); // serializing customerList object 
 
-            File.WriteAllText(fileName, jsonOutput); // Overwritting database.json
+                File.WriteAllText(fileName, jsonOutput); // Overwritting database.json
+
+                return true;
+            }
+            else 
+            {
+                return false;
+            }
 
         }
     }
