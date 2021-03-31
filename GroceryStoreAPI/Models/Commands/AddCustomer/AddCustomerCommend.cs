@@ -11,31 +11,28 @@ namespace GroceryStoreAPI.Models.Commands.AddCustomer
     {
         public bool AddCustomer(string name)
         {
-            CustomerList customer = new CustomerList();
-            string fileName = "database.json";
-
-            customer.LoadJson();
-
-            int count = customer.IdTracker();
-
-            customer.customers.Add(new Customer() // adding new element to CustommerList
+            if (!string.IsNullOrEmpty(name))
             {
-                id = count + 1,
-                name = name
-            });
+                CustomerList customer = new CustomerList();
+                string fileName = "database.json";
 
+                customer.LoadJson();
 
-            if (customer.customers != null)
-            {
+                int count = customer.IdTracker();
+
+                customer.customers.Add(new Customer() // adding new element to CustommerList
+                {
+                    id = count + 1,
+                    name = name
+                });                
+                
                 string jsonOutput = JsonSerializer.Serialize(customer); // serializing customerList object 
                 File.WriteAllText(fileName, jsonOutput);
+
                 return true;
             }
-            else
-            {
-                return false;
-            }
 
+            return false;
         }
 
     }

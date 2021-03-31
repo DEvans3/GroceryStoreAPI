@@ -15,18 +15,17 @@ namespace GroceryStoreAPI.Models.Commands.UpdateCustomer
         {
             string fileName = "database.json";
             CustomerList customerList = new CustomerList();
-            UpdateCustomerResultVM index = new UpdateCustomerResultVM();
             customerList.LoadJson();
 
-            index.CustomerId = customerList.customers.FindIndex(c => c.id == id); // finding the index of the given id
+            var index = customerList.customers.FindIndex(c => c.id == id); // finding the index of the given id
 
-            if (index.CustomerId != -1) // checking if an index is not found
+            if (index != -1) // checking if an index is not found
             {
-                var updateCustomer = customerList.customers[index.CustomerId]; // finding the element of the given id
+                var updateCustomer = customerList.customers[index]; // finding the element of the given id
                 
                 updateCustomer.name = customerName;
 
-                customerList.customers[index.CustomerId] = updateCustomer; // setting customeList element equal updateCustomer element
+                customerList.customers[index] = updateCustomer; // setting customeList element equal updateCustomer element
 
                 string jsonOutput = JsonSerializer.Serialize(customerList); // serializing customerList object 
 
@@ -34,11 +33,8 @@ namespace GroceryStoreAPI.Models.Commands.UpdateCustomer
 
                 return true;
             }
-            else
-            {
-                return false;
-            }
 
+            return false;
 
         }
     }

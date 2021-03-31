@@ -1,5 +1,7 @@
 using GroceryStoreAPI.Models;
 using GroceryStoreAPI.Models.Commands.AddCustomer;
+using GroceryStoreAPI.Models.Commands.DeleteCustomer;
+using GroceryStoreAPI.Models.Commands.UpdateCustomer;
 using GroceryStoreAPI.Models.Queries.GetCustomer;
 using GroceryStoreAPI.Models.Queries.GetCustomerList;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,37 +12,16 @@ namespace TestGroceryStoreAPI.UnitTest
     [TestClass]
     public class APITests
     {
-        [TestMethod]
-        public void LoadJson_DeserializeFile_FileElements()
-        {
-            // Arrange
-            string jsonFile = "datafile.json";
-            var load = new CustomerList();
-
-            // Act
-            load.LoadJson();
-            dynamic input = JsonConvert.DeserializeObject(jsonFile);
-
-            //Assert
-            Assert.IsNotNull(input);
-        }
 
         [TestMethod]
         public void IdTracker_TrackCustomerIds_ReturnsInt()
         {
             // Arrange
-            int countId = 0;
-            int countNum;
             var count = new CustomerList();
-
             // Act
-            countNum = count.IdTracker();
-            foreach (Customer id in count.customers)
-            {
-                countId++;
-            }
+            var countNum = count.IdTracker();
             // Assert
-            Assert.AreEqual(countId, countNum);
+            Assert.IsNotNull(countNum);
         }
 
         [TestMethod]
@@ -48,11 +29,21 @@ namespace TestGroceryStoreAPI.UnitTest
         {
             // Arrange
             var customer = new GetCustomerQuery();
-            int id = 0;
             // Act
-            var result = customer.GetCustomer(id);
+            var result = customer.GetCustomer(2);
             // Assert
             Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void GetCustomer_CustomerNameNotFound_ReturnsString()
+        {
+            // Arrange
+            var customer = new GetCustomerQuery();
+            // Act
+            var result = customer.GetCustomer(0);
+            // Assert
+            Assert.AreEqual(result, "Customer not found");
         }
 
         [TestMethod]
@@ -67,38 +58,67 @@ namespace TestGroceryStoreAPI.UnitTest
         }
 
         [TestMethod]
-        public void AddCustomer_AddCustomertoJsonFile_FileAppend()
+        public void AddCustomer_AddCustomertoJsonFile_ReturnsTrue()
         {
             // Arrange
             string name = "Doe";
             var addCustomer = new AddCustomerCommend();
 
             // Act
-            addCustomer.AddCustomer(name);
+            var result = addCustomer.AddCustomer(name);
 
             // Assert
-            
+            Assert.IsTrue(result);
 
         }
 
         [TestMethod]
-        public void UpdateCustomer_UpdateCustomerinJsonFile_FileUpdate()
+        public void AddCustomer_AddCustomertoJsonFile_ReturnsFalse()
         {
             // Arrange
+            string name = null;
+            var addCustomer = new AddCustomerCommend();
 
             // Act
+            var result = addCustomer.AddCustomer(name);
 
             // Assert
+            Assert.IsFalse(result);
+
         }
 
         [TestMethod]
-        public void DeleteCustomer_DeleteCustomerfromJsonFile_DeleteElement()
+        public void UpdateCustomer_UpdateCustomerinJsonFile_ReturnsTrue()
         {
             // Arrange
-
+            var updateCustomer = new UpdateCustomerCommand();
             // Act
-
+            var result = updateCustomer.UpdateCustomer(2, "Larry");
             // Assert
+            Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        public void UpdateCustomer_UpdateCustomerinJsonFile_ReturnsFalse()
+        {
+            // Arrange
+            var updateCustomer = new UpdateCustomerCommand();
+            // Act
+            var result = updateCustomer.UpdateCustomer(-1, "Larry");
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void DeleteCustomer_DeleteCustomerfromJsonFile_ReturnsFalse()
+        {
+            // Arrange
+            var deleteCustomer = new DeleteCustomerCommand();
+            // Act
+            var result = deleteCustomer.DeleteCustomer(-1);
+            // Assert
+            Assert.IsFalse(result);
+        }
+
     }
 }

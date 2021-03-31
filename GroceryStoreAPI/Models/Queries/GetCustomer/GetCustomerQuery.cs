@@ -14,15 +14,17 @@ namespace GroceryStoreAPI.Models.Queries.GetCustomer
             CustomerList customerList = new CustomerList();
             customerList.LoadJson();
 
+            // query to return a single customer based on id
             var queryCustomer = (from cust in customerList.customers
                                  where cust.id == id
                                  select cust.name).FirstOrDefault();
 
-            if (queryCustomer != null)
+            if (!string.IsNullOrEmpty(queryCustomer))
             {
                 customer = queryCustomer;
-            }
 
+                return customer;
+            }
 
             return customer;
 
